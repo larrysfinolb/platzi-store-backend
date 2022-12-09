@@ -3,7 +3,6 @@ const cors = require('cors');
 const routerApi = require('./routes');
 
 const {
-  logErrors,
   boomErrorHandler,
   errorHandler,
 } = require('./middlewares/error.handler');
@@ -26,11 +25,8 @@ app.use(cors(options));
 
 routerApi(app);
 
-app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-const PORT = 3001;
-app.listen(PORT, () => {
-  console.log('Server running in port', PORT);
-});
+const PORT = process.env.PORT || 3001;
+app.listen(PORT);
