@@ -15,4 +15,4 @@ const errorHandler = (error, req, res, next) => {
   });
 };
 
-module.exports = { logErrors, boomErrorHandler, errorHandler };
+module.exports = { boomErrorHandler, errorHandler };
