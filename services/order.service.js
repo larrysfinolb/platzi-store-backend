@@ -4,12 +4,16 @@ const { models } = require('./../libs/sequelize');
 class OrderService {
   constructor() {}
 
-  async create(data) {
-    const newOrder = await models.Order.create(data);
+  async create(user) {
+    const customer = await models.Customer.findOne({
+      where: { userId: user.pub },
+    });
+    if (!customer) boom.notFound("Customer not found");
+    const newOrder = await models.Order.create({ customerId: customer.id });
     return newOrder;
   }
 
-async addItem(data) {
+  async addItem(data) {
     const newItem = await models.OrderProduct.create(data);
     return newItem;
   }
@@ -20,13 +24,22 @@ async addItem(data) {
         {
           association: 'customer',
           include: ['user'],
-        }, "items",
+        },
+        'items',
       ],
     });
     return orders;
   }
 
-
+  async findByUser(userId) {
+    const orders = await models.Order.findAll({
+      where: {
+        '$customer.user.id$': userId,
+      },
+      include: [{ association: 'customer' }, { include: ['user'] }],
+    });
+    return orders;
+  }
 
   async findOne(id) {
     return { id };

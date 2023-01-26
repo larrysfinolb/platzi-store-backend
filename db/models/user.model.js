@@ -18,6 +18,11 @@ const UserSchema = {
     allowNull: false,
     type: DataTypes.STRING,
   },
+  recoveryToken: {
+    field: 'recovery_token',
+    allowNull: true,
+    type: DataTypes.STRING,
+  },
   role: {
     allowNull: false,
     type: DataTypes.STRING,
@@ -34,9 +39,9 @@ const UserSchema = {
 class User extends Model {
   static associate(models) {
     this.hasOne(models.Customer, {
-      as: "customer",
-      foreignKey: "userId"
-    })
+      as: 'customer',
+      foreignKey: 'userId',
+    });
   }
 
   static config(sequelize) {

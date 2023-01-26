@@ -24,6 +24,8 @@ const options = {
 };
 app.use(cors(options));
 
+require("./utils/auth")
+
 routerApi(app);
 
 app.use(ormErrorHandler);

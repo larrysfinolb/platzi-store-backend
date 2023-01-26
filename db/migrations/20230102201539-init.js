@@ -1,75 +1,72 @@
 'use strict';
 
-const { DataTypes, Sequelize } = require('sequelize');
-
-const { USER_TABLE } = require('./../models/user.model');
-const { CUSTOMER_TABLE } = require('./../models/customer.model');
-const { CATEGORY_TABLE } = require('./../models/category.model');
-const { PRODUCT_TABLE } = require('./../models/product.models');
-const { ORDER_TABLE } = require('./../models/order.model');
-const { ORDER_PRODUCT_TABLE } = require('./../models/order-product.model');
+const { USER_TABLE } = require('../models/user.model');
+const { CUSTOMER_TABLE } = require('../models/customer.model');
+const { CATEGORY_TABLE } = require('../models/category.model');
+const { PRODUCT_TABLE } = require('../models/product.models');
+const { ORDER_TABLE } = require('../models/order.model');
+const { ORDER_PRODUCT_TABLE } = require('../models/order-product.model');
 
 module.exports = {
-  async up(queryInterface) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable(USER_TABLE, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       email: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         unique: true,
       },
       password: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
       },
       role: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         defaultValue: 'customer',
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DataTypes.DATE,
         field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
     });
-
     await queryInterface.createTable(CUSTOMER_TABLE, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       name: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
       },
       lastName: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         field: 'last_name',
       },
       phone: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DataTypes.DATE,
         field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
       userId: {
         field: 'user_id',
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
         unique: true,
         references: {
           model: USER_TABLE,
@@ -79,64 +76,62 @@ module.exports = {
         onDelete: 'SET NULL',
       },
     });
-
     await queryInterface.createTable(CATEGORY_TABLE, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       name: {
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         unique: true,
         allowNull: false,
       },
       image: {
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DataTypes.DATE,
         field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
     });
-
     await queryInterface.createTable(PRODUCT_TABLE, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       name: {
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
       image: {
-        type: DataTypes.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
       description: {
-        type: DataTypes.TEXT,
+        type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
       price: {
-        type: DataTypes.DOUBLE,
+        type: Sequelize.DataTypes.DOUBLE,
         allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DataTypes.DATE,
         field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
       categoryId: {
         field: 'category_id',
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
         references: {
           model: CATEGORY_TABLE,
           key: 'id',
@@ -145,18 +140,17 @@ module.exports = {
         onDelete: 'SET NULL',
       },
     });
-
     await queryInterface.createTable(ORDER_TABLE, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       customerId: {
         field: 'customer_id',
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
         references: {
           model: CUSTOMER_TABLE,
           key: 'id',
@@ -166,50 +160,47 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DataTypes.DATE,
         field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
     });
-
-    await queryInterface.createTable(PRODUCT_TABLE, {
+    await queryInterface.createTable(ORDER_PRODUCT_TABLE, {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DataTypes.DATE,
         field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
       amount: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
       },
       orderId: {
         field: 'order_id',
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
         references: {
           model: ORDER_TABLE,
           key: 'id',
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
-      productId: {
-        field: 'product_id',
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        references: {
-          model: PRODUCT_TABLE,
-          key: 'id',
+        productId: {
+          fied: 'product_id',
+          allowNull: false,
+          type: Sequelize.DataTypes.INTEGER,
+          references: {
+            model: PRODUCT_TABLE,
+            key: 'id',
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL',
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
       },
     });
   },

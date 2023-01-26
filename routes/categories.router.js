@@ -6,6 +6,8 @@ const {
   updateCategorySchema,
   getCategorySchema,
 } = require('./../schemas/category.schema');
+const passport = require('passport');
+const { checkRoles } = require('../middlewares/auth.handler');
 
 const router = express.Router();
 const service = new CategoryService();
@@ -21,6 +23,8 @@ router
     }
   })
   .post(
+    passport.authenticate('jwt', { session: false }),
+    checkRoles('admin'),
     validatorHandler(createCategorySchema, 'body'),
     async (req, res, next) => {
       try {
@@ -48,6 +52,8 @@ router
     }
   )
   .patch(
+    passport.authenticate('jwt', { session: false }),
+    checkRoles('admin'),
     validatorHandler(getCategorySchema, 'params'),
     validatorHandler(updateCategorySchema, 'body'),
     async (req, res, next) => {
@@ -62,6 +68,8 @@ router
     }
   )
   .delete(
+    passport.authenticate('jwt', { session: false }),
+    checkRoles('admin'),
     validatorHandler(getCategorySchema, 'params'),
     async (req, res, next) => {
       try {

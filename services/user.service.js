@@ -1,27 +1,41 @@
 const boom = require('@hapi/boom');
 const { models } = require('./../libs/sequelize');
+const bcrypt = require('bcrypt');
 
 class UserService {
   constructor() {}
 
   async create(data) {
-    const res = await models.User.create(data);
-    return res;
+    const hash = await bcrypt.hash(data.password, 10);
+    const newUser = await models.User.create({
+      ...data,
+      password: hash,
+    });
+    delete newUser.dataValues.password;
+    return newUser;
   }
 
   async find() {
     const res = await models.User.findAll({
-      include: ["customer"],
+      include: ['customer'],
     });
     return res;
   }
 
   async findOne(id) {
-    const res = await models.User.findByPk(id);
-    if (!res) {
+    const user = await models.User.findByPk(id);
+    if (!user) {
       throw boom.notFound('User not found');
     }
-    return res;
+    delete user.dataValues.password;
+    return user;
+  }
+
+  async findByEmail(email) {
+    const user = await models.User.findOne({
+      where: { email },
+    });
+    return user;
   }
 
   async update(id, changes) {
